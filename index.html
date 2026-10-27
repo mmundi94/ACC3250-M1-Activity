@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Practice Activity: The Credit Desk | ACC3250 Module 1</title>
+<style>
+:root{
+  --paper:#fff4e2;
+  --card:#fffdf8;
+  --ink:#1e1b3a;
+  --muted:#5c5873;
+  --coral:#ff5a5f;
+  --tang:#ff9f1c;
+  --sky:#2e8ff0;
+  --mint:#14b886;
+  --teal:#134f5c;
+  --yellow:#FFFF02;
+  --good:#0e7a56;
+  --bad:#c2273a;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);
+  background-color:var(--paper);
+  background-image:radial-gradient(rgba(30,27,58,.08) 1.1px,transparent 1.5px);
+  background-size:15px 15px;
+  line-height:1.55;
+  font-size:16px;
+  min-height:100%;
+  position:relative;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.32;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:20px 16px 40px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Header */
+.hero{
+  position:relative;overflow:hidden;border-radius:26px;padding:26px 24px 24px;color:#fff;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(255,90,95,.95) 0,rgba(255,90,95,0) 42%),
+    radial-gradient(circle at 88% 12%,rgba(255,159,28,.95) 0,rgba(255,159,28,0) 40%),
+    radial-gradient(circle at 78% 95%,rgba(46,143,240,.9) 0,rgba(46,143,240,0) 45%),
+    radial-gradient(circle at 20% 100%,rgba(20,184,134,.85) 0,rgba(20,184,134,0) 40%),
+    var(--teal);
+}
+.hero::after{
+  content:"";position:absolute;inset:0;opacity:.45;mix-blend-mode:overlay;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+.hero>*{position:relative;z-index:1}
+.brand{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;opacity:.95}
+.brand .dot{width:6px;height:6px;border-radius:50%;background:#fff;display:inline-block}
+.chip{display:inline-block;background:var(--yellow);color:var(--ink);font-weight:800;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:999px;margin-top:16px;transform:rotate(-2deg)}
+.hero h1{font-size:clamp(1.7rem,4.6vw,2.6rem);line-height:1.1;margin:10px 0 8px;font-weight:900;letter-spacing:-.02em;text-shadow:3px 3px 0 rgba(30,27,58,.35)}
+.hero p{margin:0;max-width:620px;font-size:1.02rem;opacity:.96}
+
+/* Stamp strip */
+.strip{display:flex;gap:10px;justify-content:space-between;margin:18px 0 6px;padding:12px;background:var(--card);border:2px dashed rgba(30,27,58,.25);border-radius:var(--radius)}
+.stamp{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.stamp .ring{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;border:2.5px dashed rgba(30,27,58,.3);color:rgba(30,27,58,.35);transition:all .35s ease;background:#fff}
+.stamp .ring svg{width:28px;height:28px}
+.stamp .lbl{font-size:.7rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);line-height:1.2}
+.stamp.active .ring{border-style:solid;border-color:var(--c);color:var(--c);box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 18%,transparent)}
+.stamp.done .ring{border:3px solid var(--c);background:var(--c);color:#fff;transform:rotate(-10deg)}
+.stamp.done .lbl{color:var(--ink)}
+
+/* Folder card */
+.folder{margin-top:26px;position:relative}
+.tab{display:inline-flex;align-items:center;gap:8px;background:var(--c);color:#fff;font-weight:800;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;padding:8px 16px 10px;border-radius:14px 14px 0 0;margin-left:14px}
+.tab svg{width:18px;height:18px}
+.card{background:var(--card);border:2.5px solid var(--ink);border-radius:var(--radius);padding:22px 20px;box-shadow:0 10px 0 -3px var(--c),0 10px 0 0 var(--ink);position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;right:-60px;top:-60px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 22%,transparent) 0,transparent 70%);pointer-events:none}
+.card>*{position:relative}
+h2{font-size:clamp(1.3rem,3.4vw,1.7rem);line-height:1.2;margin:0 0 10px;font-weight:900;letter-spacing:-.01em}
+h2:focus{outline:none}
+.eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.bar{height:10px;background:rgba(30,27,58,.1);border-radius:99px;overflow:hidden;flex:1;min-width:120px;max-width:260px}
+.bar span{display:block;height:100%;background:repeating-linear-gradient(45deg,var(--c) 0 8px,color-mix(in srgb,var(--c) 75%,#fff) 8px 16px);border-radius:99px;transition:width .4s ease}
+.count{font-weight:800;font-size:.85rem;color:var(--muted)}
+.q{font-size:1.1rem;font-weight:700;margin:4px 0 18px}
+.excerpt{background:color-mix(in srgb,var(--c) 9%,#fff);border-left:6px solid var(--c);border-radius:10px;padding:14px 16px;font-family:Georgia,"Times New Roman",serif;font-size:1.02rem;margin:0 0 16px;font-style:italic}
+
+/* Options */
+.opts{display:grid;gap:10px}
+.opts.grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.opt{
+  display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;cursor:pointer;
+  font:inherit;color:var(--ink);background:#fff;border:2px solid rgba(30,27,58,.22);border-radius:14px;padding:12px 14px;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.opt:hover:not(:disabled){border-color:var(--c);transform:translateY(-2px);background:color-mix(in srgb,var(--c) 7%,#fff)}
+.opt:focus-visible,.btn:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.opt:disabled{cursor:default}
+.key{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:.85rem;background:color-mix(in srgb,var(--c) 16%,#fff);color:var(--ink);border:2px solid var(--c)}
+.otext{flex:1;padding-top:3px}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:99px;margin-left:8px;vertical-align:middle;white-space:nowrap}
+.tag svg{width:12px;height:12px}
+.opt.right{border-color:var(--good);background:#e6f7f0}
+.opt.right .key{background:var(--good);border-color:var(--good);color:#fff}
+.opt.right .tag{background:var(--good);color:#fff}
+.opt.wrong{border-color:var(--bad);background:#fdecee}
+.opt.wrong .key{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt.wrong .tag{background:var(--bad);color:#fff}
+.opt.dim{opacity:.55}
+
+/* Feedback */
+.fb{margin-top:18px;border-radius:14px;padding:14px 16px;border:2px solid;display:flex;gap:12px;align-items:flex-start}
+.fb.ok{border-color:var(--good);background:#effaf5}
+.fb.no{border-color:var(--bad);background:#fff3f4}
+.fb .badge{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.fb.ok .badge{background:var(--good)}
+.fb.no .badge{background:var(--bad)}
+.fb .badge svg{width:18px;height:18px}
+.fb strong{display:block;font-size:1rem;margin-bottom:2px}
+.fb p{margin:0}
+
+/* Buttons */
+.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:900;cursor:pointer;border:2.5px solid var(--ink);border-radius:999px;padding:11px 22px;background:var(--yellow);color:var(--ink);box-shadow:0 4px 0 var(--ink);transition:transform .12s ease,box-shadow .12s ease;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.btn.alt{background:#fff}
+.btn svg{width:18px;height:18px}
+
+/* Intro and summaries */
+.lead{font-size:1.05rem;margin:0 0 14px}
+.files{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.files li{display:flex;gap:12px;align-items:center;background:#fff;border:2px solid rgba(30,27,58,.15);border-radius:14px;padding:10px 12px}
+.files .ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;background:var(--c)}
+.files .ic svg{width:22px;height:22px}
+.files b{display:block;font-size:.95rem;line-height:1.25}
+.files small{color:var(--muted);font-size:.8rem}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.rules span{background:color-mix(in srgb,var(--teal) 10%,#fff);border:1.5px solid color-mix(in srgb,var(--teal) 40%,#fff);color:var(--teal);font-weight:700;font-size:.85rem;padding:5px 12px;border-radius:999px}
+.bigstamp{width:120px;height:120px;margin:4px auto 14px;border-radius:50%;border:4px double var(--c);color:var(--c);display:grid;place-items:center;transform:rotate(-12deg);animation:thud .5s cubic-bezier(.3,1.6,.5,1) both;background:color-mix(in srgb,var(--c) 10%,#fff)}
+.bigstamp div{text-align:center;font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem;line-height:1.1}
+.bigstamp svg{width:40px;height:40px;display:block;margin:0 auto 4px}
+@keyframes thud{0%{transform:scale(2.2) rotate(8deg);opacity:0}100%{transform:scale(1) rotate(-12deg);opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.center{text-align:center}
+.score{font-size:2.6rem;font-weight:900;line-height:1;margin:4px 0}
+.rows{display:grid;gap:10px;margin-top:16px}
+.row{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid rgba(30,27,58,.14);border-radius:14px;padding:10px 12px}
+.row .ic{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--c)}
+.row .ic svg{width:20px;height:20px}
+.row .name{flex:1;font-weight:800;line-height:1.25}
+.row .name small{display:block;font-weight:600;color:var(--muted);font-size:.82rem}
+.row .pts{font-weight:900;font-size:1.05rem;white-space:nowrap}
+.next{margin-top:18px;background:color-mix(in srgb,var(--yellow) 55%,#fff);border:2px solid var(--ink);border-radius:14px;padding:14px 16px}
+.next p{margin:0}
+footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:26px}
+@media (max-width:520px){
+  .hero{padding:22px 18px}
+  .card{padding:18px 15px}
+  .stamp .ring{width:42px;height:42px}
+  .stamp .ring svg{width:22px;height:22px}
+  .stamp .lbl{font-size:.54rem;letter-spacing:0;max-width:100%;overflow-wrap:anywhere}
+  .strip{gap:4px;padding:10px 6px}
+  .tab{margin-left:8px;font-size:.72rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="brand"><span>Nexford University</span><span class="dot" aria-hidden="true"></span><span>ACC3250 Auditing and Assurance Services</span><span class="dot" aria-hidden="true"></span><span>Module 1</span></div>
+    <span class="chip">Practice Activity</span>
+    <h1>The Credit Desk</h1>
+    <p>Read audit evidence the way a professional does, one file at a time.</p>
+  </header>
+
+  <nav class="strip" id="strip" aria-label="Progress through the five files"></nav>
+
+  <main id="app"></main>
+  <div id="live" class="sr" aria-live="polite"></div>
+  <footer>Nexford University &middot; ACC3250 Module 1 Practice Activity</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ICONS = {
+    seal: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="19" r="12"/><path d="M18 19l4 4 8-8"/><path d="M16 29l-4 14 7-3 4 5 3-11"/><path d="M32 29l4 14-7-3"/></svg>',
+    compass: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M30 18l-4 10-8 2 4-10z" fill="currentColor"/><path d="M24 6v4M24 38v4M6 24h4M38 24h4"/></svg>',
+    page: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5h17l9 9v29H12z"/><path d="M29 5v9h9"/><path d="M18 22h14M18 29h14M18 36h8"/></svg>',
+    stamp: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="10" r="6"/><path d="M21 16v8h6v-8"/><path d="M10 24h28v8H10z"/><path d="M8 40h32"/></svg>',
+    key: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="15" cy="24" r="9"/><circle cx="15" cy="24" r="3"/><path d="M24 24h18M36 24v7M42 24v5"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    cross: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    redo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v5h5"/></svg>'
+  };
+
+  var ENG = ["Financial statement audit (reasonable assurance)","Review of financial information (limited assurance)","Compliance audit","Operational (performance) audit","Sustainability assurance engagement"];
+  var SECTIONS = ["Opinion","Basis for Opinion","Material Uncertainty Related to Going Concern","Key Audit Matters","Other Information","Responsibilities","Signature, Location, and Date"];
+  var OPINIONS = ["Unmodified","Qualified (“except for”)","Adverse","Disclaimer of opinion"];
+  var THREATS = ["Self-interest","Self-review","Advocacy","Familiarity","Intimidation"];
+
+  var STAGES = [
+    {
+      title:"What the Audit Promises", short:"Promise", color:"#ff5a5f", icon:"seal",
+      intro:"Maya Okonjo, credit manager at Greenway Foods, has two documents from Easy Eats Bistro on her desk: last year's audited financial statements and this year's unaudited statements, prepared by Easy Eats' own managers. Help her decide what each one can tell her.",
+      revisit:"Section 2: Why Assurance Exists, and materiality in Section 3",
+      items:[
+        {q:"Maya's manager glances at both documents and says, “Same figures, different years. Use the recent one.” What is the strongest reply?",
+         o:["The audited statements were examined by an independent auditor who gave an opinion on them. The recent statements were prepared by the managers asking for credit.","The audited statements are guaranteed to be free of errors, so they are always the better source.","The recent statements are better, because newer figures are always more reliable.","Both are equally reliable, because both were prepared under the same accounting framework."],
+         a:0, e:"An audit closes the gap between the people who prepare financial statements and the people who rely on them. The unaudited statements come from the people asking for credit, with no independent examination behind them. The audit gives an opinion, not a guarantee."},
+        {q:"The auditor's report on last year's statements gives an unmodified opinion. What does that opinion tell Maya?",
+         o:["Every transaction Easy Eats recorded last year was checked by the auditor.","In the auditor's opinion, the statements are free from material misstatement, at a high but not absolute level of assurance.","Easy Eats is a sound business and a safe credit risk.","There was no fraud at Easy Eats last year."],
+         a:1, e:"An audit gives reasonable assurance: high, but not absolute. Auditors use sampling and risk-based testing rather than checking every transaction, an opinion on the statements isn't an opinion on the business, and the audit doesn't promise there is no fraud."},
+        {q:"Easy Eats' statements contain a $4,000 error that turns a small reported loss into a small profit. Overall materiality is $25,000. How should a user treat this error?",
+         o:["As immaterial, because it is far below overall materiality.","As material by its nature, because it changes a loss into a profit.","As material only if the auditor happened to find it.","As a matter for management only, because users never act on errors this small."],
+         a:1, e:"Size is only half of materiality. A misstatement that turns a loss into a profit, tips a loan covenant from met to breached, or involves a related party can be material whatever its amount, because it could change the decisions of the people relying on the statements."},
+        {q:"The audited report is addressed to Easy Eats' shareholders and covers last year. What is Maya entitled to conclude from it?",
+         o:["Nothing, because the report isn't addressed to Greenway.","That last year's statements were presented fairly in all material respects, but not how Easy Eats has performed since then.","That this year's unaudited figures are also reliable, because the same managers prepared them.","That Easy Eats will be able to pay a $30,000 credit limit on 45-day terms."],
+         a:1, e:"The report is written for people outside the organization who rely on the statements, and a supplier deciding on credit is one of them. But the opinion covers one set of statements for one period. It says nothing about the months since, and it isn't a promise that the customer can pay."}
+      ]
+    },
+    {
+      title:"Name the Engagement", short:"Engagement", color:"#ff9f1c", icon:"compass",
+      intro:"With the credit decision made, Greenway's board turns to its own needs. Each request below asks a different question, so each calls for a different engagement. Name it.",
+      revisit:"Section 3: The Landscape of Audits, and the three nested terms in Section 4",
+      items:[
+        {q:"Greenway's bank wants an independent opinion on whether Greenway's annual financial statements are presented fairly under IFRS Accounting Standards.", o:ENG, a:0, grid:true,
+         e:"The question is whether the statements are fairly presented under a financial reporting framework. That is a financial statement audit, and it ends in a positive opinion at a reasonable assurance level."},
+        {q:"An investor wants comfort on Greenway's half-year figures. The firm will do less work than an audit and conclude that “nothing has come to our attention” suggesting the figures are misstated.", o:ENG, a:1, grid:true,
+         e:"A negative-form conclusion is the mark of limited assurance. A review of interim financial information involves less work than an audit, and it says less."},
+        {q:"The city council that leases Greenway its warehouse asks whether Greenway has kept to the lease's conditions on how the building may be used.", o:ENG, a:2, grid:true,
+         e:"The criteria here are the terms of a contract, not a financial reporting framework. Whether an organization followed the rules that bind it is the question a compliance audit answers."},
+        {q:"Greenway's board asks its internal audit team whether delivery routes use drivers' time and fuel efficiently, judged against management's own targets.", o:ENG, a:3, grid:true,
+         e:"Efficiency and effectiveness, judged against management's objectives, is the question of an operational audit. Here internal audit does the work and reports to the audit committee, not to outside users."},
+        {q:"A major retail customer now requires Greenway to report verified data on the greenhouse gas emissions of its delivery fleet.", o:ENG, a:4, grid:true,
+         e:"Emissions data is a subject matter other than financial statements. Assurance on it is a sustainability assurance engagement, at a limited or reasonable level as agreed, and it now has its own standard, ISSA 5000."}
+      ]
+    },
+    {
+      title:"Label the Report", short:"Report", color:"#2e8ff0", icon:"page",
+      intro:"To practice for her own comparisons, Maya reads the auditor's report of a listed restaurant group. Each excerpt below comes from one section of the report. Name the section.",
+      revisit:"Section 4: Reading a real auditor's report",
+      items:[
+        {x:"In our opinion, the accompanying consolidated financial statements present fairly, in all material respects, the financial position of the group at the year end, and its financial performance and cash flows for the year, in accordance with IFRS Accounting Standards.", o:SECTIONS, a:0, grid:true,
+         e:"This is the conclusion itself. Under ISA 700 (Revised), the Opinion comes first, naming the entity, the statements, the period, and the framework."},
+        {x:"We conducted our audit in accordance with International Standards on Auditing (ISAs). We are independent of the group in accordance with the ethical requirements that apply to our audit. We believe the audit evidence we have obtained is sufficient and appropriate to provide a basis for our opinion.", o:SECTIONS, a:1, grid:true,
+         e:"The Basis for Opinion states the standards followed, the auditor's independence, and that the evidence is sufficient and appropriate. If the opinion were modified, this section would explain why."},
+        {x:"We draw attention to Note 2, which states that the group's main bank facility expires in four months and has not yet been renewed. These conditions indicate that a material uncertainty exists that may cast significant doubt on the group's ability to continue as a going concern. Our opinion is not modified in respect of this matter.", o:SECTIONS, a:2, grid:true,
+         e:"This section appears only when it applies. It flags significant doubt about the entity's ability to keep operating, and it doesn't modify the opinion by itself."},
+        {x:"Valuation of restaurant equipment. The group closed several restaurants during the year, and estimating the value of their equipment requires significant judgment. Our procedures included testing management's assumptions and comparing them with recent sale prices.", o:SECTIONS, a:3, grid:true,
+         e:"A Key Audit Matter names a matter the auditor judged most significant in the audit and explains how the auditor addressed it (ISA 701). These are often the most revealing paragraphs in the report."},
+        {x:"Management is responsible for the other information, which comprises the chair's statement and the strategic report. Our opinion does not cover the other information. Our responsibility is to read it and consider whether it is materially inconsistent with the financial statements or with our knowledge obtained in the audit.", o:SECTIONS, a:4, grid:true,
+         e:"The Other Information section sets out the auditor's responsibilities for the rest of the annual report. The auditor reads it but gives no opinion on it."},
+        {x:"Management is responsible for preparing financial statements that present fairly the group's position and performance, and for such internal control as it determines is necessary. Our objectives are to obtain reasonable assurance about whether the financial statements as a whole are free from material misstatement, and to issue a report that includes our opinion.", o:SECTIONS, a:5, grid:true,
+         e:"The Responsibilities sections separate management's duty to prepare the statements from the auditor's duty to form an opinion with reasonable assurance."},
+        {x:"Signed by the engagement partner, for and on behalf of the audit firm, in the city where the firm practices, on March 28.", o:SECTIONS, a:6, grid:true,
+         e:"The report closes with the signature, location, and date. The date marks the point up to which the auditor considered events after the year end."}
+      ]
+    },
+    {
+      title:"Choose the Opinion", short:"Opinion", color:"#14b886", icon:"stamp",
+      intro:"Same restaurant group, five different endings. Choose the opinion each situation calls for.",
+      revisit:"Section 4: The four opinion types",
+      items:[
+        {q:"Receivables are materially overstated. Every other balance is fairly stated, and receivables are one of many balances.", o:OPINIONS, a:1, grid:true,
+         e:"The misstatement is material but confined to one balance, so it is not pervasive. That calls for a qualified (“except for”) opinion."},
+        {q:"Misstatements run through revenue, inventory, and receivables, and together they change the picture the statements give.", o:OPINIONS, a:2, grid:true,
+         e:"The misstatements are material and pervasive, so the statements as a whole do not present fairly. That calls for an adverse opinion."},
+        {q:"A fire destroyed most of the accounting records, and the auditor couldn't obtain enough evidence for most balances.", o:OPINIONS, a:3, grid:true,
+         e:"The problem is missing evidence, not a known misstatement, and its possible effects are pervasive. The auditor gives a disclaimer of opinion."},
+        {q:"The statements are fairly presented. The auditor describes revenue recognition as a Key Audit Matter.", o:OPINIONS, a:0, grid:true,
+         e:"A Key Audit Matter describes a significant area of the audit. It never changes the opinion, so the opinion stays unmodified."},
+        {q:"The statements are fairly presented, and a material uncertainty about going concern is fully and properly disclosed in the notes.", o:OPINIONS, a:0, grid:true,
+         e:"The opinion is unmodified. The report adds a Material Uncertainty Related to Going Concern section, which draws attention to the disclosure without modifying the opinion."}
+      ]
+    },
+    {
+      title:"Guard Independence", short:"Independence", color:"#134f5c", icon:"key",
+      intro:"An opinion is worth only as much as the auditor's freedom to give the answer nobody wants. The firm that audits Greenway is checking its own position. Name the threat, then choose the right response.",
+      revisit:"Section 4: Independence and professional skepticism",
+      items:[
+        {q:"An audit manager on the Greenway engagement team owns shares in Greenway.", o:THREATS, a:0, grid:true,
+         e:"A shareholding in the client gives the auditor a personal stake in the result. That is a self-interest threat."},
+        {q:"Last year, the firm prepared the valuation of Greenway's warehouse that now appears in the financial statements. This year, it audits that figure.", o:THREATS, a:1, grid:true,
+         e:"Auditing a valuation or a system the firm itself prepared is a self-review threat: the firm is checking its own work."},
+        {q:"A partner at the firm speaks publicly in support of Greenway's position in a legal dispute with a supplier.", o:THREATS, a:2, grid:true,
+         e:"Promoting the client's position, for example in a dispute, is an advocacy threat."},
+        {q:"The engagement partner has led the Greenway audit for many years, and the audit senior's brother works in Greenway's finance team.", o:THREATS, a:3, grid:true,
+         e:"A long-serving partner and a relative in the client's finance team are both familiarity threats: closeness can soften the auditor's view."},
+        {q:"Greenway's finance director tells the firm it will be replaced if it raises the inventory issue again.", o:THREATS, a:4, grid:true,
+         e:"A threat of dismissal is an intimidation threat: pressure designed to stop the auditor from disagreeing."},
+        {q:"The firm concludes that the long-serving partner's familiarity threat is not at an acceptable level. Which response fits the threat?",
+         o:["Rotate a different partner onto the engagement.","Ask the finance director to confirm that the partner is objective.","Make no change, because the partner knows the client well.","Ask the partner to review the work more quickly."],
+         a:0, e:"When a threat isn't at an acceptable level, the firm applies a safeguard that fits it, such as partner rotation or an independent review. If no safeguard is enough, the firm declines or resigns."},
+        {q:"Greenway's finance director explains a large adjustment made at the year end. Which response shows professional skepticism?",
+         o:["Treat the explanation as something to test with evidence.","Accept it, because the finance director knows the business best.","Ignore it, because adjustments are management's responsibility.","Ask the finance director to repeat the explanation in writing and stop there."],
+         a:0, e:"Independence creates the freedom to disagree. Professional skepticism is the habit of using it: treating management's explanation as something to test, not as evidence."}
+      ]
+    }
+  ];
+
+  var app = document.getElementById("app");
+  var strip = document.getElementById("strip");
+  var live = document.getElementById("live");
+  var state;
+
+  function reset(){
+    state = {screen:"intro", s:0, i:0, results:STAGES.map(function(st){return st.items.map(function(){return null;});})};
+  }
+
+  function letters(n){return String.fromCharCode(65+n);}
+  function stageScore(si){return state.results[si].filter(function(r){return r && r.ok;}).length;}
+  function stageDone(si){return state.results[si].every(function(r){return r !== null;});}
+
+  function renderStrip(){
+    var html = "";
+    STAGES.forEach(function(st, si){
+      var cls = "stamp";
+      if (stageDone(si)) cls += " done";
+      else if (state.screen !== "intro" && state.screen !== "results" && si === state.s) cls += " active";
+      var status = stageDone(si) ? "complete" : (cls.indexOf("active") > -1 ? "in progress" : "not started");
+      html += '<div class="'+cls+'" style="--c:'+st.color+'"><span class="ring">'+ICONS[st.icon]+'</span><span class="lbl">'+st.short+'</span><span class="sr">File '+(si+1)+', '+status+'</span></div>';
+    });
+    strip.innerHTML = html;
+  }
+
+  function focusHeading(){
+    var h = app.querySelector("h2");
+    if (h){ h.setAttribute("tabindex","-1"); h.focus({preventScroll:false}); }
+  }
+
+  function renderIntro(){
+    var files = STAGES.map(function(st, si){
+      return '<li style="--c:'+st.color+'"><span class="ic">'+ICONS[st.icon]+'</span><span><b>File '+(si+1)+': '+st.title+'</b><small>'+st.items.length+' questions</small></span></li>';
+    }).join("");
+    app.innerHTML =
+      '<section class="folder" style="--c:#ff5a5f">'+
+        '<div class="tab">'+ICONS.seal+'<span>Your brief</span></div>'+
+        '<div class="card">'+
+          '<span class="eyebrow">Greenway Foods &middot; Credit Desk</span>'+
+          '<h2>Maya has until Friday</h2>'+
+          '<p class="lead">Easy Eats Bistro orders about $8,000 of stock a week from Greenway Foods. It now wants its credit limit raised to $30,000, on 45-day terms. You are joining Maya Okonjo, Greenway\'s credit manager, to read the evidence the way an auditor would: what an audit promises, which engagement answers which question, how an auditor\'s report is built, which opinion fits, and what keeps the auditor independent.</p>'+
+          '<p class="lead">Work through five files. Each question allows one attempt. Your answer is recorded, you see why the best answer is right, and you move on.</p>'+
+          '<ul class="files">'+files+'</ul>'+
+          '<div class="rules"><span>About 20 minutes</span><span>28 questions</span><span>One attempt per question</span></div>'+
+          '<div class="actions"><button class="btn" id="start" type="button">Open the first file '+ICONS.arrow+'</button></div>'+
+        '</div>'+
+      '</section>';
+    document.getElementById("start").addEventListener("click", function(){
+      state.screen = "stageIntro"; state.s = 0; state.i = 0; render(true);
+    });
+  }
+
+  function renderStageIntro(){
+    var st = STAGES[state.s];
+    app.innerHTML =
+      '<section class="folder" style="--c:'+st.color+'">'+
+        '<div class="tab">'+ICONS[st.icon]+'<span>File '+(state.s+1)+' of '+STAGES.length+'</span></div>'+
+        '<div class="card">'+
+          '<span class="eyebrow">'+st.items.length+' questions</span>'+
+          '<h2>'+st.title+'</h2>'+
+          '<p class="lead">'+st.intro+'</p>'+
+          '<div class="actions"><button class="btn" id="go" type="button">Begin this file '+ICONS.arrow+'</button></div>'+
+        '</div>'+
+      '</section>';
+    document.getElementById("go").addEventListener("click", function(){
+      state.screen = "item"; state.i = 0; render(true);
+    });
+  }
+
+  function renderItem(){
+    var st = STAGES[state.s];
+    var it = st.items[state.i];
+    var res = state.results[state.s][state.i];
+    var pct = Math.round((state.i)/st.items.length*100);
+    var opts = it.o.map(function(text, k){
+      var cls = "opt", tag = "";
+      if (res){
+        if (k === it.a){ cls += " right"; tag = '<span class="tag">'+ICONS.check+(res.pick === k ? "Your answer" : "Best answer")+'</span>'; }
+        else if (k === res.pick){ cls += " wrong"; tag = '<span class="tag">'+ICONS.cross+'Your answer</span>'; }
+        else cls += " dim";
+      }
+      return '<button type="button" class="'+cls+'" data-k="'+k+'"'+(res ? ' disabled' : '')+'><span class="key" aria-hidden="true">'+letters(k)+'</span><span class="otext">'+text+tag+'</span></button>';
+    }).join("");
+    var prompt = it.x
+      ? '<p class="q">Which section of the auditor\'s report does this excerpt come from?</p><blockquote class="excerpt">'+it.x+'</blockquote>'
+      : '<p class="q">'+it.q+'</p>';
+    var fb = "";
+    if (res){
+      fb = '<div class="fb '+(res.ok ? "ok" : "no")+'"><span class="badge">'+(res.ok ? ICONS.check : ICONS.cross)+'</span><div><strong>'+(res.ok ? "Correct" : "Not quite. Recorded as incorrect.")+'</strong><p>'+it.e+'</p></div></div>';
+      var last = state.i === st.items.length - 1;
+      fb += '<div class="actions"><button class="btn" id="next" type="button">'+(last ? "Close this file" : "Next question")+' '+ICONS.arrow+'</button></div>';
+    }
+    app.innerHTML =
+      '<section class="folder" style="--c:'+st.color+'">'+
+        '<div class="tab">'+ICONS[st.icon]+'<span>File '+(state.s+1)+': '+st.title+'</span></div>'+
+        '<div class="card">'+
+          '<div class="meta"><span class="count">Question '+(state.i+1)+' of '+st.items.length+'</span><span class="bar" role="progressbar" aria-label="Progress in this file" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pct+'"><span style="width:'+pct+'%"></span></span></div>'+
+          '<h2 class="sr">Question '+(state.i+1)+'</h2>'+
+          prompt+
+          '<div class="opts'+(it.grid ? ' grid' : '')+'" role="group" aria-label="Answer options">'+opts+'</div>'+
+          fb+
+        '</div>'+
+      '</section>';
+    if (!res){
+      Array.prototype.forEach.call(app.querySelectorAll(".opt"), function(b){
+        b.addEventListener("click", function(){ answer(parseInt(b.getAttribute("data-k"),10)); });
+      });
+    } else {
+      document.getElementById("next").addEventListener("click", function(){
+        if (state.i < st.items.length - 1){ state.i++; render(true); }
+        else { state.screen = "stageDone"; render(true); }
+      });
+    }
+  }
+
+  function answer(k){
+    var it = STAGES[state.s].items[state.i];
+    if (state.results[state.s][state.i]) return;
+    var ok = k === it.a;
+    state.results[state.s][state.i] = {pick:k, ok:ok};
+    render(false);
+    live.textContent = (ok ? "Correct. " : "Not quite. Recorded as incorrect. The best answer is " + letters(it.a) + ". ") + it.e;
+    var n = document.getElementById("next");
+    if (n) n.focus();
+  }
+
+  function renderStageDone(){
+    var st = STAGES[state.s];
+    var sc = stageScore(state.s), tot = st.items.length;
+    var last = state.s === STAGES.length - 1;
+    app.innerHTML =
+      '<section class="folder" style="--c:'+st.color+'">'+
+        '<div class="tab">'+ICONS[st.icon]+'<span>File '+(state.s+1)+' closed</span></div>'+
+        '<div class="card center">'+
+          '<div class="bigstamp" aria-hidden="true"><div>'+ICONS[st.icon]+'Filed</div></div>'+
+          '<h2>'+st.title+'</h2>'+
+          '<p class="score">'+sc+' / '+tot+'</p>'+
+          '<p class="lead">'+(sc === tot ? "Every answer in this file was correct." : "Questions you missed are recorded. You can review this topic in " + st.revisit + ".")+'</p>'+
+          '<div class="actions" style="justify-content:center"><button class="btn" id="cont" type="button">'+(last ? "See your credit file" : "Open file " + (state.s+2))+' '+ICONS.arrow+'</button></div>'+
+        '</div>'+
+      '</section>';
+    live.textContent = "File " + (state.s+1) + " closed. " + sc + " of " + tot + " correct.";
+    document.getElementById("cont").addEventListener("click", function(){
+      if (last){ state.screen = "results"; }
+      else { state.s++; state.i = 0; state.screen = "stageIntro"; }
+      render(true);
+    });
+  }
+
+  function renderResults(){
+    var total = 0, max = 0;
+    var rows = STAGES.map(function(st, si){
+      var sc = stageScore(si), tot = st.items.length;
+      total += sc; max += tot;
+      var note = sc === tot ? "All correct" : "Review: " + st.revisit;
+      return '<div class="row" style="--c:'+st.color+'"><span class="ic">'+ICONS[st.icon]+'</span><span class="name">File '+(si+1)+': '+st.title+'<small>'+note+'</small></span><span class="pts">'+sc+' / '+tot+'</span></div>';
+    }).join("");
+    app.innerHTML =
+      '<section class="folder" style="--c:#134f5c">'+
+        '<div class="tab">'+ICONS.seal+'<span>Credit file complete</span></div>'+
+        '<div class="card">'+
+          '<div class="center">'+
+            '<span class="eyebrow">Your results</span>'+
+            '<h2>All five files are closed</h2>'+
+            '<p class="score">'+total+' / '+max+'</p>'+
+          '</div>'+
+          '<div class="rows">'+rows+'</div>'+
+          '<div class="next"><p><strong>Up next: Assignment 1.</strong> You will find the auditor\'s reports of two real organizations and compare them. Use what you practiced here: who the report serves, the type of engagement and its assurance level, the sections of the report, and the opinion type.</p></div>'+
+          '<div class="actions"><button class="btn alt" id="again" type="button">'+ICONS.redo+' Start again</button></div>'+
+        '</div>'+
+      '</section>';
+    live.textContent = "Activity complete. " + total + " of " + max + " correct.";
+    document.getElementById("again").addEventListener("click", function(){ reset(); render(true); });
+  }
+
+  function render(moveFocus){
+    renderStrip();
+    if (state.screen === "intro") renderIntro();
+    else if (state.screen === "stageIntro") renderStageIntro();
+    else if (state.screen === "item") renderItem();
+    else if (state.screen === "stageDone") renderStageDone();
+    else renderResults();
+    if (moveFocus){
+      focusHeading();
+      if (state.screen !== "intro"){
+        var top = document.getElementById("strip");
+        if (top && top.scrollIntoView) top.scrollIntoView({behavior:"smooth", block:"start"});
+      }
+    }
+  }
+
+  reset();
+  render(false);
+})();
+</script>
+</body>
+</html>
